@@ -1,0 +1,300 @@
+<html>
+	<head>
+		<title>OH MY DAYS.</title>
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body { 
+				margin: 0; 
+				background-color: #fff;
+				font-family: 'Lato', sans-serif;
+				
+			}
+			canvas { 
+				width: 100%; height: 100%; 
+				background-color: #fff;
+
+			}
+
+			a {
+				text-decoration: none;
+				color: black;
+			}
+
+			.opacityOne {
+				opacity: 1 !important;
+
+				-webkit-transition: all 1s ease-in-out;
+ 				-moz-transition: all 1s ease-in-out;
+ 				-o-transition: all 1s ease-in-out;
+ 				transition: all 1s ease-in-out;
+			}
+
+			.opacityZero {
+				opacity: 0 !important;
+				
+				-webkit-transition: all 1s ease-in-out;
+ 				-moz-transition: all 1s ease-in-out;
+ 				-o-transition: all 1s ease-in-out;
+ 				transition: all 1s ease-in-out;
+			}
+
+			h1, h2 {
+				font-weight: 300;
+				margin: 0;
+			}
+
+			.backimg {
+				background-image: url('images/food.jpg');
+				background-size: cover;
+			}
+
+			#cont {
+				opacity: 0;
+			}
+
+			.info {
+				position: absolute;
+				top: 45%;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+			}
+
+			.info h1{
+				font-size: 24px;
+			}
+
+			.info h2 {
+				font-size: 18px;
+				padding-bottom: 16px;
+			}
+
+			.info span {
+				font-size: 16px;
+				font-weight: 300;
+			}
+
+			.info span a {
+				text-decoration: none;
+				color: black;
+				font-weight: 400;
+			}
+
+			.contact {
+				width: 100%;
+				text-align: center;
+				font-size: 16px;
+				font-weight: 300;
+
+				position: absolute;
+				z-index: 1000;
+				bottom: 50px;
+			}
+
+			.contact a {
+				font-size: 16px;
+				font-weight: 400;
+			}
+
+			
+		</style>
+
+		<link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
+	</head>
+	<body>
+
+		<div class="info">
+			<h1>Steven Harris</h1>
+			<h2>Front End Developer</h2>
+			<span>I'm currently looking after <a onmouseover="hideIt()" onmouseout="fadeIn()" class="hideIt" href="http://www.greatbritishchefs.com">Great British Chefs</a>
+			</span>
+		</div>
+
+		<div class="contact">Drop me an <a href="mailto:mail@stevengeorgeharris.com">email!</a>
+
+		<script src="js/three.min.js"></script>
+		<script src="js/projector.js"></script>
+		<script src="js/canvasrenderer.js"></script>
+		<script>
+
+			window.onload = setTimeout(function pageLoad() {
+				var tar = document.getElementById('cont');
+				var body = document.body;
+
+				setTimeout(function() {
+					tar.className = "opacityOne";
+				}, 1500);
+
+				setTimeout(function(){
+					body.className = "backimg";
+				}, 2500);
+			});
+
+			function hideIt() {
+					var targetForAnim = document.getElementById('cont');
+					targetForAnim.className = "opacityZero";
+
+			}
+
+			function fadeIn(){
+					var targetForAnim = document.getElementById('cont');
+					targetForAnim.className = "opacityOne";
+			}
+
+			var mouseX = 0, mouseY = 0,
+
+			windowHalfX = window.innerWidth / 2,
+			windowHalfY = window.innerHeight / 2,
+
+			SEPARATION = 200,
+			AMOUNTX = 10,
+			AMOUNTY = 10,
+
+			camera, scene, renderer;
+
+			init();
+			animate();
+
+			function init() {
+
+				var container, separation = 100, amountX = 50, amountY = 50,
+				particles, particle;
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				container.id = "cont";
+
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 100;
+
+				scene = new THREE.Scene();
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( 0xffffff, 1 );
+				container.appendChild( renderer.domElement );
+
+				// particles
+
+				var PI2 = Math.PI * 2;
+				var material = new THREE.SpriteCanvasMaterial( {
+
+					color: 0xE7B6D8,
+					program: function ( context ) {
+
+						context.beginPath();
+						context.arc( 0, 0, 0.5, 0, PI2, true );
+						context.fill();
+
+					}
+
+				} );
+
+				var geometry = new THREE.Geometry();
+
+				for ( var i = 0; i < 100; i ++ ) {
+
+					particle = new THREE.Sprite( material );
+					particle.position.x = Math.random() * 2 - 1;
+					particle.position.y = Math.random() * 2 - 1;
+					particle.position.z = Math.random() * 2 - 1;
+					particle.position.normalize();
+					particle.position.multiplyScalar( Math.random() * 10 + 450 );
+					particle.scale.x = particle.scale.y = 10;
+					scene.add( particle );
+
+					geometry.vertices.push( particle.position );
+
+				}
+
+				// lines
+
+				var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { 
+					color: 0xE7B6D8, 
+					opacity: 0.5 
+				} ) );
+				scene.add( line );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+
+			}
+
+			function onDocumentTouchStart( event ) {
+
+				if ( event.touches.length > 1 ) {
+
+					event.preventDefault();
+
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+				}
+
+			}
+
+			function onDocumentTouchMove( event ) {
+
+				if ( event.touches.length == 1 ) {
+
+					event.preventDefault();
+
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+				}
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+
+			}
+
+			function render() {
+
+				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .05;
+				camera.lookAt( scene.position );
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>
