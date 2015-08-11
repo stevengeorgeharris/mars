@@ -3,7 +3,7 @@
 	<head>
 		<title>OH MY DAYS.</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<style>
 			html, body {
 				height: 100%;
@@ -83,10 +83,15 @@
 
 			.info {
 				position: absolute;
-				top: 45%;
+				top: 50%;
 				width: 100%;
 				text-align: center;
 				z-index: 100;
+				-webkit-transform: translate(0, -50%);
+				-moz-transform: translate(0, -50%);
+				-o-transform: translate(0, -50%);
+				transform: translate(0, -50%);
+
 
 			}
 
@@ -133,6 +138,28 @@
 			.contact a {
 				font-size: 16px;
 				font-weight: 400;
+			}
+
+			@media screen and (max-width: 400px) {
+				.info h1{
+					font-size: 18px;
+				}
+
+				.info h2 {
+					font-size: 16px;
+					padding-bottom: 16px;
+				}
+
+				.info span {
+					font-size: 14px;
+					font-weight: 300;
+				}
+
+				.info span a {
+					text-decoration: none;
+					color: black;
+					font-weight: 400;
+				}
 			}
 
 			
